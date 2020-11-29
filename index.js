@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql");
 
+//MySQL Credentials =========================================
 const connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -8,7 +9,9 @@ const connection = mysql.createConnection({
     password: "password",
     database: "employee_db"
 });
+//===========================================================
 
+//MySQL Connection ==========================================
 connection.connect(function (err) {
     if (err) {
         console.error("Error connecting: " + err.stack);
@@ -20,8 +23,8 @@ connection.connect(function (err) {
     if (connection.connect) {
         getUserInput();
     };
-
 });
+//===========================================================
 
 function getUserInput() {
     try {
@@ -70,9 +73,11 @@ function displayAddMenu() {
         //Reconstruct this:
         switch (data.addChoice) {
             case "Add Departments":
+                //getDepartmentDetails();
                 addDepartment();
                 break;
             case "Add Roles":
+                //getRoleDetails();
                 addRole();
                 break;
             case "Add Employees":
@@ -100,29 +105,94 @@ function displayViewMenu() {
 };
 
 function updateRoles() {
-    console.log("Updating roles...");
+    // console.log("Updating roles...");
     //Function for updating roles
+    connection.query("SELECT * FROM employee;", function (err, results) {
+        inquirer.prompt([
+            {
+                name: "chosenEmployee",
+                message: "Which employee's role would you like to update?",
+                type: "list",
+                choices: function () {
+                    let choiceArray = [];
+                    for (let i = 0; i < results.length; i++) {
+                        choiceArray.push(`${results[i].first_name} ${results[i].last_name}`)
+                    } return choiceArray;
+                }
+            },
+            {
+                name: "chosenRole",
+                message: "Enter the new role ID for the selected employee:",
+                type: "input"
+            }
+        ]).then(function (answer) {
+            var chosenEmployee;
+
+            for (var i = 0; i < results.length; i++) {
+                if (`${results[i].first_name} ${results[i].last_name}` === answer.chosenEmployee) {
+                    chosenEmployee = results[i];
+                }
+            }
+            connection.query(
+                "UPDATE employee SET ? WHERE ?",
+                [
+                    {
+                        role_id: answer.chosenRole
+                    },
+                    {
+                        id: chosenEmployee.id
+                    }
+                ]
+            );
+
+            connection.end();
+        })
+    });
 };
 
 function addDepartment() {
     //insert into sql tables
     console.log("Added department!");
-
+    // Game Design 
+    // Animation 
+    // Sound
 };
 
-function addRole() {
-    //insert into sql tables
+function getRoleDetails() {
+    inquirer.prompt([
+        {
+            name: "title",
+            type: "input",
+            message: "What is the title for this role?"
+        },
+        {
+            name: "salary",
+            type: "input",
+            message: "What is the salary for this role?"
+        }
+    ]).then(function (answer) {
+        let title = answer.title;
+        title = title.charAt(0).toUpperCase() + title.slice(1);
 
-};
+        connection.query(`INSERT INTO role (title, salary) values ("${title}", "${salary}")`)
+        console.log(`Added role: ${title} with salary: ${salary}`);
+    });
+}
 
-function addEmployee(first_name, last_name) {
-    //insert into sql tables
-    connection.query(`INSERT INTO employee (first_name, last_name) values ("${first_name}", "${last_name}")`);
-    console.log("You successfully added an employee.")
-};
+//insert into sql tables
+// Game Design - Story Designer, Level Designer
+// Animation - Texture Artist, 3D Animator
+// Sound - Sound Engineer, Composer
+
+//IMPORTANT!!!
+// connection.query("SELECT * FROM role;", function (err, results) {
+//     inquirer.prompt([
+
+//     ])
+// }
 
 function getEmployeeDetails() {
-    let data = inquirer.prompt([
+    inquirer.prompt([
         {
             type: "input",
             message: "What is the employee's first name?",
@@ -133,15 +203,18 @@ function getEmployeeDetails() {
             message: "What is the employee's last name?",
             name: "last_name"
         }
-    ]).then(function (data) {
-        addEmployee(data.first_name, data.last_name);
-        console.log(data.first_name, data.last_name);
+
+    ]).then(function (answer) {
+        let first_name = answer.first_name;
+        first_name = first_name.charAt(0).toUpperCase() + first_name.slice(1);
+
+        let last_name = answer.last_name;
+        last_name = last_name.charAt(0).toUpperCase() + last_name.slice(1);
+
+        connection.query(`INSERT INTO employee (first_name, last_name) values ("${first_name}", "${last_name}")`);
+        console.log(`You successfully added: ${first_name} ${last_name}`);
     });
 };
-
-
-
-
 
 // Add departments, roles, employees
 
