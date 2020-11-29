@@ -81,7 +81,7 @@ function displayAddMenu() {
                 addRole();
                 break;
             case "Add Employees":
-                getEmployeeDetails();
+                addEmployee();
                 //addEmployee();
                 break;
             case "Quit":
@@ -156,9 +156,28 @@ function addDepartment() {
     // Game Design 
     // Animation 
     // Sound
+    inquirer.prompt([
+        {
+            name: "name",
+            type: "input",
+            message: "What is the name for this department?"
+        }
+    ]).then(function (answer) {
+        let name = answer.name;
+        name = name.charAt(0).toUpperCase() + name.slice(1);
+
+        connection.query(`INSERT INTO department (name) values ("${name}")`,
+            function (err) {
+                if (err) throw err;
+                // console.log("You need to add a department first.");
+                console.log(`Added department: ${name}`);
+                connection.end();
+            })
+        
+    });
 };
 
-function getRoleDetails() {
+function addRole() {
     inquirer.prompt([
         {
             name: "title",
@@ -169,13 +188,26 @@ function getRoleDetails() {
             name: "salary",
             type: "input",
             message: "What is the salary for this role?"
+        },
+        {
+            name: "department",
+            type: "input",
+            message: "Enter the department ID:"
         }
     ]).then(function (answer) {
         let title = answer.title;
         title = title.charAt(0).toUpperCase() + title.slice(1);
 
-        connection.query(`INSERT INTO role (title, salary) values ("${title}", "${salary}")`)
-        console.log(`Added role: ${title} with salary: ${salary}`);
+        let salary = answer.salary;
+        let department = answer.department;
+
+        connection.query(`INSERT INTO role (title, salary, department_id) values ("${title}", "${salary}", "${department}")`,
+            function (err) {
+                if (err) {throw err};
+                // console.log("You need to add a department first.");
+                // connection.end();
+            })
+        console.log(`Added role: ${title} with salary: ${salary} at department: ${department}`);
     });
 }
 
@@ -191,7 +223,7 @@ function getRoleDetails() {
 //     ])
 // }
 
-function getEmployeeDetails() {
+function addEmployee() {
     inquirer.prompt([
         {
             type: "input",
@@ -202,8 +234,12 @@ function getEmployeeDetails() {
             type: "input",
             message: "What is the employee's last name?",
             name: "last_name"
+        },
+        {
+            name: "role",
+            type: "input",
+            message: "What is the Role ID for the employee?"
         }
-
     ]).then(function (answer) {
         let first_name = answer.first_name;
         first_name = first_name.charAt(0).toUpperCase() + first_name.slice(1);
@@ -211,8 +247,10 @@ function getEmployeeDetails() {
         let last_name = answer.last_name;
         last_name = last_name.charAt(0).toUpperCase() + last_name.slice(1);
 
-        connection.query(`INSERT INTO employee (first_name, last_name) values ("${first_name}", "${last_name}")`);
-        console.log(`You successfully added: ${first_name} ${last_name}`);
+        let role = answer.role;
+
+        connection.query(`INSERT INTO employee (first_name, last_name, role_id) values ("${first_name}", "${last_name}", "${role}")`);
+        console.log(`You successfully added: ${first_name} ${last_name} with role: ${role}`);
     });
 };
 
