@@ -11,11 +11,11 @@ const connection = mysql.createConnection({
 
   connection.connect(function(err) {
     if (err) {
-      console.error("error connecting: " + err.stack);
+      console.error("Error connecting: " + err.stack);
       return;
     }
   
-    console.log("connected as id " + connection.threadId);
+    console.log("Connected as id " + connection.threadId);
 
     if (connection.connect) {
         getUserInput();
@@ -116,7 +116,8 @@ function addRole() {
 
 function addEmployee() {
     //insert into sql tables
-
+    connection.query("INSERT INTO employee (first_name, last_name) values ('Carlene', 'Tauro')");
+    console.log("You successfully added an employee.")
 };
 
 
