@@ -7,21 +7,21 @@ const connection = mysql.createConnection({
     user: "root",
     password: "password",
     database: "employee_db"
-  });
+});
 
-  connection.connect(function(err) {
+connection.connect(function (err) {
     if (err) {
-      console.error("Error connecting: " + err.stack);
-      return;
+        console.error("Error connecting: " + err.stack);
+        return;
     }
-  
+
     console.log("Connected as id " + connection.threadId);
 
     if (connection.connect) {
         getUserInput();
     };
 
-  });
+});
 
 function getUserInput() {
     try {
@@ -76,7 +76,8 @@ function displayAddMenu() {
                 addRole();
                 break;
             case "Add Employees":
-                addEmployee();
+                getEmployeeDetails();
+                //addEmployee();
                 break;
             case "Quit":
                 break;
@@ -114,11 +115,30 @@ function addRole() {
 
 };
 
-function addEmployee() {
+function addEmployee(first_name, last_name) {
     //insert into sql tables
-    connection.query("INSERT INTO employee (first_name, last_name) values ('Carlene', 'Tauro')");
+    connection.query(`INSERT INTO employee (first_name, last_name) values ("${first_name}", "${last_name}")`);
     console.log("You successfully added an employee.")
 };
+
+function getEmployeeDetails() {
+    let data = inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the employee's first name?",
+            name: "first_name"
+        },
+        {
+            type: "input",
+            message: "What is the employee's last name?",
+            name: "last_name"
+        }
+    ]).then(function (data) {
+        addEmployee(data.first_name, data.last_name);
+        console.log(data.first_name, data.last_name);
+    });
+};
+
 
 
 
