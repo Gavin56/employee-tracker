@@ -176,9 +176,10 @@ function updateRoles() {
                 ],
                 function (error) {
                     if (error) throw error;
-                    console.log("Success!")
+                    console.log(`Successfully updated ${answer.chosenEmployee}`)
+
                     viewTable(employees);
-                    setTimeout(function() {getUserInput()}, 500);
+                    setTimeout(function () { getUserInput() }, 500);
                 }
             );
         })
@@ -203,8 +204,8 @@ function addDepartment() {
                 console.log(`Added department: ${name}`);
 
                 viewTable(departments);
-                setTimeout(function() {getUserInput()}, 500);
-            });    
+                setTimeout(function () { getUserInput() }, 500);
+            });
     });
 };
 
@@ -236,9 +237,10 @@ function addRole() {
             function (err) {
                 if (err) throw err;
                 console.log(`Added role: ${title} with salary: ${salary} at department: ${department}`);
+
                 viewTable(roles);
-                setTimeout(function() {getUserInput()}, 500);
-            })         
+                setTimeout(function () { getUserInput() }, 500);
+            })
     });
 };
 
@@ -272,7 +274,7 @@ function addEmployee() {
         console.log(`You successfully added: ${first_name} ${last_name} with role ID: ${role}`);
 
         viewTable(employees);
-        setTimeout(function() {getUserInput()}, 500);
+        setTimeout(function () { getUserInput() }, 500);
     });
-    
+
 };
