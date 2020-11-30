@@ -90,17 +90,44 @@ function displayAddMenu() {
     });
 };
 
+function viewTable(query) {
+    //let query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id;";
+    connection.query(query, function (err, res) {
+    // console.log(res);
+    console.table(res)
+    });
+};
+
 function displayViewMenu() {
-    let data = inquirer.prompt([
+    inquirer.prompt([
         {
             type: "list",
             message: "Select what you would like to view:",
             choices: ["View Departments", "View Roles", "View Employees"],
             name: "viewChoice"
         }
-    ]).then(function () {
+    ]).then(function (answer) {
         console.log("You successfully chose a view option.")
         //Switch statement to determing which data table to Select from and log
+        switch (answer.viewChoice) {
+            case "View Departments":
+                let departments = "SELECT * FROM department;";
+                viewTable(departments);
+                break;
+            case "View Roles":
+                console.log("Viewing roles...");
+                //viewTable(roles);
+                break;
+            case "View Employees":
+                console.log("Viewing employees...");
+                // viewTable(employees);
+            case "View All":
+                console.log("Viewing all...");
+                //viewTable(allTables);
+                break;
+            case "Quit":
+                break;
+        }
     });
 };
 
