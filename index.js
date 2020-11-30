@@ -109,7 +109,7 @@ function displayViewMenu() {
         {
             type: "list",
             message: "Select what you would like to view:",
-            choices: ["[View Departments]", "[View Roles]", "[View Employees]", "[Main Menu]", "[Quit]"],
+            choices: ["[View Departments]", "[View Roles]", "[View Employees]", "[View All]", "[Main Menu]", "[Quit]"],
             name: "viewChoice"
         }
     ]).then(function (answer) {
