@@ -177,10 +177,10 @@ function updateRoles() {
                 function (error) {
                     if (error) throw error;
                     console.log("Success!")
-                    // viewTable(employees);
+                    viewTable(employees);
+                    setTimeout(function() {getUserInput()}, 500);
                 }
             );
-            getUserInput();
         })
     });
 };
@@ -201,9 +201,10 @@ function addDepartment() {
                 if (err) throw err;
                 // console.log("You need to add a department first.");
                 console.log(`Added department: ${name}`);
-                // viewTable(departments);
+
+                viewTable(departments);
+                setTimeout(function() {getUserInput()}, 500);
             });    
-        getUserInput();
     });
 };
 
@@ -235,9 +236,9 @@ function addRole() {
             function (err) {
                 if (err) throw err;
                 console.log(`Added role: ${title} with salary: ${salary} at department: ${department}`);
-                // viewTable(roles);
-            })
-        getUserInput();
+                viewTable(roles);
+                setTimeout(function() {getUserInput()}, 500);
+            })         
     });
 };
 
@@ -268,8 +269,10 @@ function addEmployee() {
         let role = answer.role;
 
         connection.query(`INSERT INTO employee (first_name, last_name, role_id) values ("${first_name}", "${last_name}", "${role}")`);
-        console.log(`You successfully added: ${first_name} ${last_name} with role: ${role}`);
-        // viewTable(employees);
+        console.log(`You successfully added: ${first_name} ${last_name} with role ID: ${role}`);
+
+        viewTable(employees);
+        setTimeout(function() {getUserInput()}, 500);
     });
-    getUserInput();
+    
 };
