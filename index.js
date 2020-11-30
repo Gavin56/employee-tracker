@@ -39,21 +39,22 @@ function getUserInput() {
             {
                 type: "list",
                 message: "What would you like to do?",
-                choices: ["[Add]", "[View]", "[Update Employee Roles]", "[Quit]"],
+                choices: ["[Add Data]", "[View Data]", "[Update Employee Roles]", "[Quit]"],
                 name: "processChoice"
             }
         ]).then(function (data) {
             switch (data.processChoice) {
-                case "[Add]":
+                case "[Add Data]":
                     displayAddMenu();
                     break;
-                case "[View]":
+                case "[View Data]":
                     displayViewMenu();
                     break;
                 case "[Update Employee Roles]":
                     updateRoles();
                     break;
                 case "[Quit]":
+                    connection.end();
                     break;
             }
         });
@@ -87,6 +88,7 @@ function displayAddMenu() {
                 addEmployee();
                 break;
             case "[Quit]":
+                connection.end();
                 break;
         }
     });
@@ -122,6 +124,7 @@ function displayViewMenu() {
                 viewTable(allData);
                 break;
             case "[Quit]":
+                connection.end();
                 break;
         }
     });
