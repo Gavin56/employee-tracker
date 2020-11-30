@@ -33,6 +33,12 @@ let employees = "SELECT * FROM employee;";
 let allData = "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id;";
 //===================================================================
 
+function viewTable(query) {
+    connection.query(query, function (err, res) {
+        console.table(res)
+    });
+};
+
 function getUserInput() {
     try {
         let data = inquirer.prompt([
@@ -69,7 +75,7 @@ function displayAddMenu() {
         {
             type: "list",
             message: "Select what you would like to add:",
-            choices: ["[Add Departments]", "[Add Roles]", "[Add Employees]", "[Quit]"],
+            choices: ["[Add Departments]", "[Add Roles]", "[Add Employees]", "[Main Menu]", "[Quit]"],
             name: "addChoice"
         }
     ]).then(function (answer) {
@@ -87,16 +93,13 @@ function displayAddMenu() {
             case "[Add Employees]":
                 addEmployee();
                 break;
+            case "[Main Menu]":
+                getUserInput();
+                break;
             case "[Quit]":
                 connection.end();
                 break;
         }
-    });
-};
-
-function viewTable(query) {
-    connection.query(query, function (err, res) {
-        console.table(res)
     });
 };
 
@@ -105,7 +108,7 @@ function displayViewMenu() {
         {
             type: "list",
             message: "Select what you would like to view:",
-            choices: ["[View Departments]", "[View Roles]", "[View Employees]", "[Quit]"],
+            choices: ["[View Departments]", "[View Roles]", "[View Employees]", "[Main Menu]", "[Quit]"],
             name: "viewChoice"
         }
     ]).then(function (answer) {
@@ -121,6 +124,9 @@ function displayViewMenu() {
                 viewTable(employees);
             case "[View All]":
                 viewTable(allData);
+                break;
+            case "[Main Menu]":
+                getUserInput();
                 break;
             case "[Quit]":
                 connection.end();
@@ -167,19 +173,19 @@ function updateRoles() {
                     {
                         id: chosenEmployee.id
                     }
-                ]
+                ],
+                function (error) {
+                    if (error) throw error;
+                    console.log("Success!")
+                    // viewTable(employees);
+                }
             );
-
-            viewTable(roles);
-            connection.end();
+            getUserInput();
         })
     });
 };
 
 function addDepartment() {
-    // Game Design 
-    // Animation 
-    // Sound
     inquirer.prompt([
         {
             name: "name",
@@ -195,9 +201,9 @@ function addDepartment() {
                 if (err) throw err;
                 // console.log("You need to add a department first.");
                 console.log(`Added department: ${name}`);
-                connection.end();
-            });
-        viewTable(departments);
+                // viewTable(departments);
+            });    
+        getUserInput();
     });
 };
 
@@ -227,20 +233,13 @@ function addRole() {
 
         connection.query(`INSERT INTO role (title, salary, department_id) values ("${title}", "${salary}", "${department}")`,
             function (err) {
-                if (err) { throw err };
-                // console.log("You need to add a department first.");
-                // connection.end();
+                if (err) throw err;
+                console.log(`Added role: ${title} with salary: ${salary} at department: ${department}`);
+                // viewTable(roles);
             })
-        console.log(`Added role: ${title} with salary: ${salary} at department: ${department}`);
-        viewTable(roles);
-        connection.end();
+        getUserInput();
     });
-}
-
-//insert into sql tables
-// Game Design - Story Designer, Level Designer
-// Animation - Texture Artist, 3D Animator
-// Sound - Sound Engineer, Composer
+};
 
 function addEmployee() {
     inquirer.prompt([
@@ -270,7 +269,7 @@ function addEmployee() {
 
         connection.query(`INSERT INTO employee (first_name, last_name, role_id) values ("${first_name}", "${last_name}", "${role}")`);
         console.log(`You successfully added: ${first_name} ${last_name} with role: ${role}`);
-        viewTable(employees);
-        connection.end();
+        // viewTable(employees);
     });
+    getUserInput();
 };
