@@ -109,7 +109,6 @@ function displayViewMenu() {
             name: "viewChoice"
         }
     ]).then(function (answer) {
-        console.log("You successfully chose a view option.")
         //Switch statement to determing which data table to Select from and log
         switch (answer.viewChoice) {
             case "[View Departments]":
@@ -157,7 +156,8 @@ function updateRoles() {
                 if (`${results[i].first_name} ${results[i].last_name}` === answer.chosenEmployee) {
                     chosenEmployee = results[i];
                 }
-            }
+            };
+
             connection.query(
                 "UPDATE employee SET ? WHERE ?",
                 [
@@ -169,6 +169,7 @@ function updateRoles() {
                     }
                 ]
             );
+
             viewTable(roles);
             connection.end();
         })
@@ -240,13 +241,6 @@ function addRole() {
 // Game Design - Story Designer, Level Designer
 // Animation - Texture Artist, 3D Animator
 // Sound - Sound Engineer, Composer
-
-//IMPORTANT!!!
-// connection.query("SELECT * FROM role;", function (err, results) {
-//     inquirer.prompt([
-
-//     ])
-// }
 
 function addEmployee() {
     inquirer.prompt([

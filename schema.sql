@@ -12,20 +12,20 @@ create table department (
 
 create table role (
 	id int auto_increment not null,
-    title varchar(30) not null,
-    salary decimal(10,2) not null,
-    department_id int not null,
+    title varchar(30),
+    salary decimal(10,2),
+    department_id int,
     primary key (id),
-    FOREIGN KEY (department_id) REFERENCES department(id)
+    foreign key (department_id) references department (id)
 );
 
 create table employee (
 	id int auto_increment not null,
-    first_name varchar(30) not null,
-    last_name varchar(30) not null,
-    role_id int not null,
+    first_name varchar(30),
+    last_name varchar(30),
+    role_id int,
     primary key (id),
-    -- FOREIGN KEY (role_id) REFERENCES role(id)
+    foreign key (role_id) references role (id)
 );
 
 insert into employee (first_name, last_name) values ("Gavin", "O'Brien"); 
