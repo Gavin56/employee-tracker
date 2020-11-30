@@ -26,29 +26,34 @@ connection.connect(function (err) {
 });
 //===========================================================
 
+//Variables to contain the strings needed to select tables from MySQL
+let departments = "SELECT * FROM department;";
+let roles = "SELECT * FROM role;";
+let employees = "SELECT * FROM employee;";
+let allData = "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id;";
+//===================================================================
+
 function getUserInput() {
     try {
         let data = inquirer.prompt([
             {
                 type: "list",
                 message: "What would you like to do?",
-                choices: ["Add", "View", "Update Employee Roles", "Quit"],
+                choices: ["[Add]", "[View]", "[Update Employee Roles]", "[Quit]"],
                 name: "processChoice"
             }
         ]).then(function (data) {
-            // console.log(".then works!");
-
             switch (data.processChoice) {
-                case "Add":
+                case "[Add]":
                     displayAddMenu();
                     break;
-                case "View":
+                case "[View]":
                     displayViewMenu();
                     break;
-                case "Update Employee Roles":
+                case "[Update Employee Roles]":
                     updateRoles();
                     break;
-                case "Quit":
+                case "[Quit]":
                     break;
             }
         });
@@ -59,42 +64,37 @@ function getUserInput() {
 };
 
 function displayAddMenu() {
-    let data = inquirer.prompt([
+    inquirer.prompt([
         {
             type: "list",
             message: "Select what you would like to add:",
-            choices: ["Add Departments", "Add Roles", "Add Employees"],
+            choices: ["[Add Departments]", "[Add Roles]", "[Add Employees]", "[Quit]"],
             name: "addChoice"
         }
-    ]).then(function (data) {
+    ]).then(function (answer) {
         //console.log("You successfully chose an add option.")
         //Switch + Functions for  Add departments, roles, employees
 
         //Reconstruct this:
-        switch (data.addChoice) {
-            case "Add Departments":
-                //getDepartmentDetails();
+        switch (answer.addChoice) {
+            case "[Add Departments]":
                 addDepartment();
                 break;
-            case "Add Roles":
-                //getRoleDetails();
+            case "[Add Roles]":
                 addRole();
                 break;
-            case "Add Employees":
+            case "[Add Employees]":
                 addEmployee();
-                //addEmployee();
                 break;
-            case "Quit":
+            case "[Quit]":
                 break;
         }
     });
 };
 
 function viewTable(query) {
-    //let query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id;";
     connection.query(query, function (err, res) {
-    // console.log(res);
-    console.table(res)
+        console.table(res)
     });
 };
 
@@ -103,36 +103,31 @@ function displayViewMenu() {
         {
             type: "list",
             message: "Select what you would like to view:",
-            choices: ["View Departments", "View Roles", "View Employees"],
+            choices: ["[View Departments]", "[View Roles]", "[View Employees]", "[Quit]"],
             name: "viewChoice"
         }
     ]).then(function (answer) {
         console.log("You successfully chose a view option.")
         //Switch statement to determing which data table to Select from and log
         switch (answer.viewChoice) {
-            case "View Departments":
-                let departments = "SELECT * FROM department;";
+            case "[View Departments]":
                 viewTable(departments);
                 break;
-            case "View Roles":
-                console.log("Viewing roles...");
-                //viewTable(roles);
+            case "[View Roles]":
+                viewTable(roles);
                 break;
-            case "View Employees":
-                console.log("Viewing employees...");
-                // viewTable(employees);
-            case "View All":
-                console.log("Viewing all...");
-                //viewTable(allTables);
+            case "[View Employees]":
+                viewTable(employees);
+            case "[View All]":
+                viewTable(allData);
                 break;
-            case "Quit":
+            case "[Quit]":
                 break;
         }
     });
 };
 
 function updateRoles() {
-    // console.log("Updating roles...");
     //Function for updating roles
     connection.query("SELECT * FROM employee;", function (err, results) {
         inquirer.prompt([
@@ -171,15 +166,13 @@ function updateRoles() {
                     }
                 ]
             );
-
+            viewTable(roles);
             connection.end();
         })
     });
 };
 
 function addDepartment() {
-    //insert into sql tables
-    console.log("Added department!");
     // Game Design 
     // Animation 
     // Sound
@@ -199,8 +192,8 @@ function addDepartment() {
                 // console.log("You need to add a department first.");
                 console.log(`Added department: ${name}`);
                 connection.end();
-            })
-        
+            });
+        viewTable(departments);
     });
 };
 
@@ -230,11 +223,13 @@ function addRole() {
 
         connection.query(`INSERT INTO role (title, salary, department_id) values ("${title}", "${salary}", "${department}")`,
             function (err) {
-                if (err) {throw err};
+                if (err) { throw err };
                 // console.log("You need to add a department first.");
                 // connection.end();
             })
         console.log(`Added role: ${title} with salary: ${salary} at department: ${department}`);
+        viewTable(roles);
+        connection.end();
     });
 }
 
@@ -278,11 +273,7 @@ function addEmployee() {
 
         connection.query(`INSERT INTO employee (first_name, last_name, role_id) values ("${first_name}", "${last_name}", "${role}")`);
         console.log(`You successfully added: ${first_name} ${last_name} with role: ${role}`);
+        viewTable(employees);
+        connection.end();
     });
 };
-
-// Add departments, roles, employees
-
-// View departments, roles, employees
-
-// Update employee roles

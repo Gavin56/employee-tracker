@@ -16,7 +16,7 @@ create table role (
     salary decimal(10,2),
     department_id int,
     primary key (id),
-    foreign key (department_id) references department(id)
+    foreign key (department_id) references department (id)
 );
 
 create table employee (
@@ -25,7 +25,7 @@ create table employee (
     last_name varchar(30),
     role_id int,
     primary key (id),
-    foreign key (role_id) references role(id)
+    foreign key (role_id) references role (id)
 );
 
 insert into employee (first_name, last_name) values ("Gavin", "O'Brien"); 
